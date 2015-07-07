@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">DRMFramework</string>
+
+    <string name="drm_manager_client">DrmManagerClient</string>
+    <string name="drm_framework">DrmFramework</string>
+
+    <string name="dialog_title">Select</string>
+    <string name="dialog_cancel">Cancel</string>
+
+    <string name="action_play_ts">Play TS</string>
+    <string name="action_drm_framework">DrmFramework</string>
+
+<!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>
