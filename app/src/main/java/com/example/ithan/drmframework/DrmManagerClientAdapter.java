@@ -15,10 +15,12 @@ public class DrmManagerClientAdapter extends BaseAdapter {
         GET_AVAILABLE_DRM_ENGINES,
         CAN_HANDLE,
         CHECK_RIGHTS_STATUS,
-        CHECK_RIGHTS_STATUS_PLAY,
+        CHECK_RIGHTS_STATUS_ACTION,
         GET_DRM_OBJECT_TYPE,
         GET_ORIGINAL_MIME_TYPE,
-        ACQUIRE_RIGHTS
+        ACQUIRE_RIGHTS,
+        PROCESS_DRM_INFO,
+        GET_CONSTRAINTS;
         ;
     }
 

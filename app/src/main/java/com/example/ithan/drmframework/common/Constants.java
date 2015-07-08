@@ -15,17 +15,19 @@ public class Constants {
         URI, PATH;
     }
 
-    public final static String MIME_TYPE_WMV = "audio/x-ms-wmv";
+    public enum CHECK_RIGHTS_STATUS_ACTION_TYPE {
+        DEFAULT, PLAY, RINGTONE, TRANSFER, OUTPUT, PREVIEW, EXECUTE, DISPLAY;
+    }
 
     public final static String[] CONTENT_PATH = {
-        Environment.getExternalStorageDirectory().getPath() + "/Movies/Bear_Video_OPLs0.pyv",
-        Environment.getExternalStorageDirectory().getPath() + "/Movies/Bear_Video_OPLs100.pyv",
-        Environment.getExternalStorageDirectory().getPath() + "/Movies/Jazz_Audio_OPLs100.pyv",
-        Environment.getExternalStorageDirectory().getPath() + "/Movies/Lake_UncompDigVideo_OPL250.pyv"
+        Environment.getExternalStorageDirectory().getPath() + "/Download/playready/Lake_AnalogVideo150_CGMS_A11b.pyv",
+        Environment.getExternalStorageDirectory().getPath() + "/Download/playready/Bear_Video_OPLs0.pyv",
+        Environment.getExternalStorageDirectory().getPath() + "/Download/playready/Bear_Video_OPLs100.pyv",
+        Environment.getExternalStorageDirectory().getPath() + "/Download/playready/ChainedTestVideo1.pyv",
+        Environment.getExternalStorageDirectory().getPath() + "/Download/playready/Lake_UncompDigVideo_OPL250.pyv",
+        Environment.getExternalStorageDirectory().getPath() + "/Download/playready/non_silent_lic_acq.pya",
+        Environment.getExternalStorageDirectory().getPath() + "/Download/widevine/sintel_main_720p_4br_tp.wvm"
     };
 
-    public final static String CONTENT_PATH_1 = Environment.getExternalStorageDirectory().getPath() + "/Movies/Bear_Video_OPLs0.pyv";
-    public final static String CONTENT_PATH_2 = Environment.getExternalStorageDirectory().getPath() + "/Movies/Bear_Video_OPLs100.pyv";
-    public final static String CONTENT_PATH_3 = Environment.getExternalStorageDirectory().getPath() + "/Movies/Jazz_Audio_OPLs100.pyv";
-    public final static String CONTENT_PATH_4 = Environment.getExternalStorageDirectory().getPath() + "/Movies/Lake_UncompDigVideo_OPL250.pyv";
+    public final static boolean debug = true;
 }

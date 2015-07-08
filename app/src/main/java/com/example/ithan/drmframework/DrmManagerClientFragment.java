@@ -24,7 +24,7 @@ import com.example.ithan.drmframework.common.Constants;
  */
 public class DrmManagerClientFragment extends Fragment {
     private enum DIALOG_TYPE {
-        SELECT_CONTENT, CAN_HANDLE;
+        SELECT_CONTENT, CAN_HANDLE, CHECK_RIGHTS_STATUS_ACTION;
     };
 
     private TextView mTvLog = null;
@@ -98,6 +98,9 @@ public class DrmManagerClientFragment extends Fragment {
                 } else if (dialogType == DIALOG_TYPE.CAN_HANDLE) {
                     Constants.CAN_HANDLE_TYPE[] canHandleTypes = Constants.CAN_HANDLE_TYPE.values();
                     canHandle(mPath, canHandleTypes[which]);
+                } else if (dialogType == DIALOG_TYPE.CHECK_RIGHTS_STATUS_ACTION) {
+                    Constants.CHECK_RIGHTS_STATUS_ACTION_TYPE[] checkRightsStatusActionTypes = Constants.CHECK_RIGHTS_STATUS_ACTION_TYPE.values();
+                    checkRightsStatus(mPath, checkRightsStatusActionTypes[which]);
                 }
 
                 dialog.dismiss();
@@ -123,46 +126,41 @@ public class DrmManagerClientFragment extends Fragment {
                     break;
                 case CAN_HANDLE:
                     Constants.CAN_HANDLE_TYPE[] canHandleTypes = Constants.CAN_HANDLE_TYPE.values();
-                    String[] items = new String[canHandleTypes.length];
+                    String[] handleItems = new String[canHandleTypes.length];
                     for (int i = 0; i < canHandleTypes.length; i++) {
-                       items[i] = canHandleTypes[i].toString();
+                        handleItems[i] = canHandleTypes[i].toString();
                     }
 
-                    showDialog(DIALOG_TYPE.CAN_HANDLE, items);
+                    showDialog(DIALOG_TYPE.CAN_HANDLE, handleItems);
                     break;
                 case CHECK_RIGHTS_STATUS:
-                    int status = drmManager.checkRightsStatus(mPath);
-                    if (status == DrmStore.Action.PLAY) {
-                        mTvLog.setText("play rights");
-                    } else if (status == DrmStore.Action.DEFAULT){
-                        mTvLog.setText("default rights");
-                    } else if (status == DrmStore.Action.TRANSFER) {
-                        mTvLog.setText("transfer rights");
-                    } else {
-                        mTvLog.setText("status is " + status);
-                    }
+                    checkRightsStatus(mPath);
                     break;
-                case CHECK_RIGHTS_STATUS_PLAY:
-                    int statu1s = drmManager.checkRightsStatus(mPath, DrmStore.Action.PLAY);
-                    if (statu1s == DrmStore.RightsStatus.RIGHTS_VALID) {
-                        mTvLog.setText("valid rights");
-                    } else {
-                        mTvLog.setText("invalid rights");
+                case CHECK_RIGHTS_STATUS_ACTION:
+                    Constants.CHECK_RIGHTS_STATUS_ACTION_TYPE[] checkRightsStatusActionTypes = Constants.CHECK_RIGHTS_STATUS_ACTION_TYPE.values();
+
+                    String[] actionItems = new String[checkRightsStatusActionTypes.length];
+
+                    for (int i = 0; i < checkRightsStatusActionTypes.length; i++) {
+                        actionItems[i] = checkRightsStatusActionTypes[i].toString();
                     }
+
+                    showDialog(DIALOG_TYPE.CHECK_RIGHTS_STATUS_ACTION, actionItems);
                     break;
                 case GET_DRM_OBJECT_TYPE:
-                    drmManager.getDrmObjectType(mPath, drmManager.getOriginalMimeType(mPath));
+                    getDrmObjectType(mPath);
                     break;
                 case GET_ORIGINAL_MIME_TYPE:
-                    String mimeType = drmManager.getOriginalMimeType(mPath);
-                    if (mimeType != null) {
-                        mTvLog.setText(mimeType);
-                    } else {
-                        mTvLog.setText("cant handle");
-                    }
+                    getOriginalMimeType(mPath);
                     break;
                 case ACQUIRE_RIGHTS:
 
+                    break;
+                case PROCESS_DRM_INFO:
+                    mDrmManager.processDrmInfo(mPath);
+                    break;
+                case GET_CONSTRAINTS:
+                    mDrmManager.getConstraints(mPath, DrmStore.Action.PLAY);
                     break;
                 default:
                     break;
@@ -212,6 +210,71 @@ public class DrmManagerClientFragment extends Fragment {
             mTvLog.setText("transfer rights");
         } else {
             mTvLog.setText("status is " + status);
+        }
+    }
+
+    private void checkRightsStatus(String path, Constants.CHECK_RIGHTS_STATUS_ACTION_TYPE checkRightsStatusType) {
+        int action = 0;
+
+        switch (checkRightsStatusType) {
+            case DEFAULT:
+                action = DrmStore.Action.DEFAULT;
+                break;
+            case PLAY:
+                action = DrmStore.Action.PLAY;
+                break;
+            case RINGTONE:
+                action = DrmStore.Action.RINGTONE;
+                break;
+            case TRANSFER:
+                action = DrmStore.Action.TRANSFER;
+                break;
+            case OUTPUT:
+                action = DrmStore.Action.OUTPUT;
+                break;
+            case PREVIEW:
+                action = DrmStore.Action.PREVIEW;
+                break;
+            case EXECUTE:
+                action = DrmStore.Action.EXECUTE;
+                break;
+            case DISPLAY:
+                action = DrmStore.Action.DISPLAY;
+                break;
+        }
+
+        int status = mDrmManager.checkRightsStatus(path, action);
+        if (status == DrmStore.RightsStatus.RIGHTS_VALID) {
+            mTvLog.setText("rights_valid");
+        } else if (status == DrmStore.RightsStatus.RIGHTS_INVALID) {
+            mTvLog.setText("rights_invalid");
+        } else if (status == DrmStore.RightsStatus.RIGHTS_NOT_ACQUIRED) {
+            mTvLog.setText("rights_acquired");
+        } else if (status == DrmStore.RightsStatus.RIGHTS_EXPIRED) {
+            mTvLog.setText("rights_expired");
+        }
+    }
+
+    private void getDrmObjectType(String path) {
+        int objectType = mDrmManager.getDrmObjectType(path, null);
+
+        if (objectType == DrmStore.DrmObjectType.CONTENT) {
+            mTvLog.setText("type is content");
+        } else if (objectType == DrmStore.DrmObjectType.RIGHTS_OBJECT) {
+            mTvLog.setText("type is rights object");
+        } else if (objectType == DrmStore.DrmObjectType.TRIGGER_OBJECT) {
+            mTvLog.setText("type is trigger object");
+        } else if (objectType == DrmStore.DrmObjectType.UNKNOWN) {
+            mTvLog.setText("type is unknown");
+        }
+    }
+
+    private void getOriginalMimeType(String path) {
+        String mimeType = mDrmManager.getOriginalMimeType(path);
+        if (mimeType != null) {
+            mTvLog.setText(mimeType);
+        } else {
+            mTvLog.setText("fail get mime type");
         }
     }
 }
